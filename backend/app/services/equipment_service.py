@@ -6,7 +6,7 @@ equipment_data = [
         "equipment_type": "Haul Truck",
         "site": "Site A",
         "manufacturer": "Caterpillar",
-        "model": "793F"
+        "model": "793F",
     },
     {
         "id": 2,
@@ -15,8 +15,8 @@ equipment_data = [
         "equipment_type": "Water Pump",
         "site": "Site A",
         "manufacturer": "Grundfos",
-        "model": "CR64"
-    }
+        "model": "CR64",
+    },
 ]
 
 

@@ -107,6 +107,27 @@ The tests cover the health check, equipment listing, an empty equipment list,
 retrieval by ID, and an unknown ID. [backend/pytest.ini](backend/pytest.ini)
 sets the Python import path for test discovery.
 
+## Linting and formatting
+
+To identify lint issues:
+
+```bash
+ruff check .
+```
+
+To format Python files:
+
+```bash
+ruff format .
+```
+
+Formatting fixes style inconsistencies; run `ruff check .` again to verify lint
+issues. To apply automatic fixes for supported lint violations, run:
+
+```bash
+ruff check --fix .
+```
+
 ## Project structure
 
 ```text

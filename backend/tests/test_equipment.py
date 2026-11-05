@@ -19,12 +19,14 @@ def test_list_equipment():
     assert len(data) == 2
     assert data[0]["asset_code"] == "HT-102"
 
+
 def test_empty_equipment_response(monkeypatch):
     monkeypatch.setattr(equipment_service, "equipment_data", [])
 
     response = client.get("/api/v1/equipment")
     assert response.status_code == 200
     assert response.json() == []
+
 
 def test_get_equipment():
     response = client.get("/api/v1/equipment/1")

@@ -2,10 +2,7 @@ from fastapi import FastAPI
 
 from app.api.equipment import router as equipment_router
 
-app = FastAPI(
-    title="MineOps AI",
-    version="0.1.0"
-)
+app = FastAPI(title="MineOps AI", version="0.1.0")
 
 
 @app.get("/health")
