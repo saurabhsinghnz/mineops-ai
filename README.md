@@ -55,6 +55,26 @@ The development server runs at http://127.0.0.1:8000:
 
 `--reload` is intended for local development.
 
+### Database migrations
+
+To generate schema changes run:
+
+```bash
+alembic revision --autogenerate -m "description"
+```
+
+To upgrade DB, run:
+
+```bash
+alembic upgrade head
+```
+
+To downgrade DB, run:
+
+```bash
+alembic downgrade base
+```
+
 ## API
 
 | Method | Endpoint                           | Description                                                     |
