@@ -1,3 +1,7 @@
+from app.models.equipment import Equipment
+from app.schemas.equipment import EquipmentCreate
+from sqlalchemy.orm import Session
+
 equipment_data = [
     {
         "id": 1,
@@ -18,6 +22,14 @@ equipment_data = [
         "model": "CR64",
     },
 ]
+
+
+def create_equipment(db: Session, data: EquipmentCreate) -> Equipment:
+    equipment = Equipment(**data.model_dump())
+    db.add(equipment)
+    db.commit()
+    db.refresh(equipment)
+    return equipment
 
 
 def get_all_equipment():
