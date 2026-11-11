@@ -1,7 +1,7 @@
+from app.schemas.equipment import EquipmentResponse
 from fastapi import APIRouter, HTTPException
 
-from app.schemas.equipment import EquipmentResponse
-from app.services.equipment_service import get_all_equipment, get_equipment_by_id
+from backend.app.services.service import get_all_equipment, get_equipment_by_id
 
 router = APIRouter(prefix="/api/v1/equipment", tags=["Equipment"])
 

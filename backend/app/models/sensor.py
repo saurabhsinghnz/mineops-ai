@@ -1,7 +1,6 @@
+from app.db.base import Base
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from app.db.base import Base
 
 
 class Sensor(Base):

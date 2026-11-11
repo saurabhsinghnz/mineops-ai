@@ -1,7 +1,7 @@
+from app.main import app
 from fastapi.testclient import TestClient
 
-from app.main import app
-from app.services import equipment_service
+from backend.app.services import service
 
 client = TestClient(app)
 
@@ -21,7 +21,7 @@ def test_list_equipment():
 
 
 def test_empty_equipment_response(monkeypatch):
-    monkeypatch.setattr(equipment_service, "equipment_data", [])
+    monkeypatch.setattr(service, "equipment_data", [])
 
     response = client.get("/api/v1/equipment")
     assert response.status_code == 200

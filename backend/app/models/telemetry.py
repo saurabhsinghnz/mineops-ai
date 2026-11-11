@@ -1,9 +1,8 @@
 from datetime import UTC, datetime
 
+from app.db.base import Base
 from sqlalchemy import DateTime, Float, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from app.db.base import Base
 
 
 class Telemetry(Base):
