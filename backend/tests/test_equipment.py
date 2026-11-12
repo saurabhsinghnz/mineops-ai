@@ -3,7 +3,6 @@ from app.api.dependencies import get_db
 from app.api.routes import equipment as equipment_route
 from app.main import app
 from app.models.equipment import Equipment
-from app.services import service
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, select
 from sqlalchemy.exc import IntegrityError
@@ -21,29 +20,55 @@ class TestHealth:
 
 
 class TestGetEquipment:
-    def test_list_equipment(self):
-        response = client.get("/api/v1/equipment")
+    def test_list_equipment(self, create_client, db, equipment_data):
+        created = create_client.post("/api/v1/equipment", json=equipment_data)
+        assert created.status_code == 201
+        second = Equipment(
+            asset_code="PMP-201",
+            name="Water Pump 201",
+            equipment_type="Water Pump",
+            site="Site B",
+        )
+        db.add(second)
+        db.commit()
+        db.refresh(second)
+
+        response = create_client.get("/api/v1/equipment")
         assert response.status_code == 200
-        data = response.json()
-        assert len(data) == 2
-        assert data[0]["asset_code"] == "HT-102"
+        assert sorted(response.json(), key=lambda item: item["id"]) == [
+            created.json(),
+            {
+                "id": second.id,
+                "asset_code": "PMP-201",
+                "name": "Water Pump 201",
+                "equipment_type": "Water Pump",
+                "site": "Site B",
+                "manufacturer": None,
+                "model": None,
+            },
+        ]
 
-    def test_empty_equipment_response(self, monkeypatch):
-        monkeypatch.setattr(service, "equipment_data", [])
-
-        response = client.get("/api/v1/equipment")
+    def test_empty_equipment_response(self, create_client):
+        response = create_client.get("/api/v1/equipment")
         assert response.status_code == 200
         assert response.json() == []
 
-    def test_get_equipment(self):
-        response = client.get("/api/v1/equipment/1")
-        assert response.status_code == 200
-        data = response.json()
-        assert data["asset_code"] == "HT-102"
+    def test_get_equipment(self, create_client, equipment_data):
+        created = create_client.post(
+            "/api/v1/equipment",
+            json={**equipment_data, "asset_code": "DB-001", "name": "Database asset"},
+        )
+        assert created.status_code == 201
 
-    def test_unknown_equipment(self):
-        response = client.get("/api/v1/equipment/999")
+        response = create_client.get(f"/api/v1/equipment/{created.json()['id']}")
+        assert response.status_code == 200
+        assert response.json() == created.json()
+
+    @pytest.mark.parametrize("equipment_id", [1, 999])
+    def test_unknown_equipment(self, create_client, equipment_id):
+        response = create_client.get(f"/api/v1/equipment/{equipment_id}")
         assert response.status_code == 404
+        assert response.json() == {"detail": "Equipment not found"}
 
 
 @pytest.fixture
@@ -86,7 +111,9 @@ def equipment_data():
 
 class TestPostEquipment:
     @pytest.mark.parametrize("include_optional", [True, False])
-    def test_create_equipment(self, create_client, db, equipment_data, include_optional):
+    def test_create_equipment(
+        self, create_client, db, equipment_data, include_optional
+    ):
         if not include_optional:
             equipment_data.pop("manufacturer")
             equipment_data.pop("model")

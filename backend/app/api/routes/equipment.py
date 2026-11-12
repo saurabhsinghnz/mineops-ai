@@ -31,14 +31,13 @@ def add_equipment(data: EquipmentCreate, db: Annotated[Session, Depends(get_db)]
 
 
 @router.get("", response_model=list[EquipmentResponse])
-def list_equipment():
-    return get_all_equipment()
+def list_equipment(db: Annotated[Session, Depends(get_db)]):
+    return get_all_equipment(db)
 
 
 @router.get("/{equipment_id}", response_model=EquipmentResponse)
-def retrieve_equipment(equipment_id: int):
-
-    equipment = get_equipment_by_id(equipment_id)
+def retrieve_equipment(equipment_id: int, db: Annotated[Session, Depends(get_db)]):
+    equipment = get_equipment_by_id(db, equipment_id)
 
     if equipment is None:
         raise HTTPException(status_code=404, detail="Equipment not found")
